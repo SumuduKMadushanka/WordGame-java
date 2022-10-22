@@ -1,7 +1,9 @@
 package main;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyListener;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -10,14 +12,16 @@ import javax.swing.JTextField;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
 
-public class WordGame implements ActionListener {
+public class WordGame implements ActionListener, KeyListener {
 	private JFrame frame;
 	private JTextField text_field;
 	private JButton[] letter_buttons;
+	private HashMap<String, Integer> letter_index_map;
 	private ArrayList<String> word_list;
 	private String word;
 	
@@ -25,6 +29,7 @@ public class WordGame implements ActionListener {
 		this.frame = new JFrame("Word Game");
 		this.text_field = new JTextField();
 		this.letter_buttons = new JButton[26];
+		this.letter_index_map = new HashMap<String, Integer>();
 		this.word_list = new ArrayList<String>();
 		readWordsFromFile();
 		this.word = selectWord();
@@ -43,12 +48,14 @@ public class WordGame implements ActionListener {
 				'V', 'B', 'N', 'M'};
 		for (int i = 0; i < 26; i++) {
 			this.letter_buttons[i] = new JButton(String.valueOf(letters[i]));
+			this.letter_index_map.put(String.valueOf(letters[i]), i);
 			this.letter_buttons[i].addActionListener(this);
 		}
 		
 		lb_1.setBounds(x, y, 300, 25); y += 50;
 		this.text_field.setBounds(x, y, 525, 25); y += 50;
 		this.text_field.setText(createGuessWord());
+		this.text_field.addKeyListener(this);
 		this.text_field.setEditable(false);
 		
 		int i = 0;
@@ -140,4 +147,22 @@ public class WordGame implements ActionListener {
 		}
 		tmp.setEnabled(false);
 	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {}
+
+	@Override
+	public void keyTyped(KeyEvent e) {}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		char c = e.getKeyChar();
+		if ((c >= 'a' && c <= 'z') || c >= 'A' && c <= 'Z') {
+			String text = (Character.toString(c)).toUpperCase();
+			if(checkLetter(text)) {
+				changeGuessWord(text);
+			}
+			this.letter_buttons[this.letter_index_map.get(text)].setEnabled(false);
+		}
+    }
 }
