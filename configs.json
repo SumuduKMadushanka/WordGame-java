@@ -1,0 +1,6 @@
+{
+    "project"           : "Word Game",
+    "bin_location"      : "bin",
+    "src_location"      : "src",
+    "file_list"    : ["main\\WordGame", "main\\DemoGame"]
+}
